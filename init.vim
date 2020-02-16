@@ -2,39 +2,41 @@
 " Plugins
 """""""""""""""""""""""""""""""""""""""
 call plug#begin()
-Plug 'junegunn/fzf'                   " Fuzzy finder
-Plug 'vim-airline/vim-airline'        " Fancy statusline
-Plug 'vim-airline/vim-airline-themes' " Themes for airline
-Plug 'chrisbra/csv.vim'               " CSV file specific commands
-Plug 'lervag/vimtex'                  " LaTeX support
-Plug 'Townk/vim-autoclose'            " Automatically close ( { [ etc
-Plug 'godlygeek/tabular'              " Align stuff
-Plug 'plasticboy/vim-markdown'        " Markdown support
-Plug 'mattn/emmet-vim'                " Emmet-style abbreviation expansion
-Plug 'sheerun/vim-polyglot'           " Language profiles (syntax highlighting)
-Plug 'tpope/vim-fugitive'             " Git integration
-Plug 'tpope/vim-unimpaired'           " Miscellaneous mappings
-Plug 'wellle/tmux-complete.vim'       " Use words in adjacent tmux panes as a completion source
-Plug 'Chiel92/vim-autoformat'         " Autoformatter
-Plug 'majutsushi/tagbar'              " Tagbar
-Plug '907th/vim-auto-save'            " Autosave
-Plug 'francoiscabrol/ranger.vim'      " Open ranger if you accidently vim a directory
-Plug 'rbgrouleff/bclose.vim'          " Close buffers without closing the window
-Plug 'edkolev/tmuxline.vim'           " Format tmux's statusbar to look like airline
-Plug 'dylanaraps/wal.vim'             " Support for Wal colorschemes
-Plug 'mbbill/undotree'                " A nice undo-tree viewer
-Plug 'tpope/vim-surround'             " Surround text with arbitrary characters
-Plug 'tpope/vim-git'                  " Filetype plugin for git files
-Plug 'neoclide/coc-neco'              " Viml completion source for coc.nvim
-Plug 'airblade/vim-gitgutter'         " Git diff tracker for airline
-Plug 'scrooloose/nerdcommenter'       " Format comments properly and automatically
-Plug 'scrooloose/nerdtree'            " Tree file broweser inside vim
-Plug 'Xuyuanp/nerdtree-git-plugin'    " Git status plugin for nerdtree
-Plug 'ludovicchabant/vim-gutentags'   " Tag management plugin
-
-
 Plug 'neoclide/coc.nvim', {'branch': 'release'} " Hugely powerful LanguageServer/Completion/Syntax/EverythingElse plugin
 
+Plug '907th/vim-auto-save'            " Autosave
+Plug 'Chiel92/vim-autoformat'         " Autoformatter
+Plug 'Townk/vim-autoclose'            " Automatically close ( { [ etc
+Plug 'Xuyuanp/nerdtree-git-plugin'    " Git status plugin for nerdtree
+Plug 'airblade/vim-gitgutter'         " Git diff tracker for airline
+Plug 'arthurxavierx/vim-caser'        " Easily change word casing with motions, text objects or visual mode
+Plug 'chrisbra/csv.vim'               " CSV file specific commands
+Plug 'dylanaraps/wal.vim'             " Support for Wal colorschemes
+Plug 'edkolev/tmuxline.vim'           " Format tmux's statusbar to look like airline
+Plug 'godlygeek/tabular'              " Align stuff
+Plug 'junegunn/fzf'                   " Fuzzy finder
+Plug 'junegunn/fzf.vim'               " Fuzzy finder plugin for vim
+Plug 'lervag/vimtex'                  " LaTeX support
+Plug 'ludovicchabant/vim-gutentags'   " Tag management plugin
+Plug 'm42e/vim-lgh'                   " Local history using git
+Plug 'majutsushi/tagbar'              " Tagbar
+Plug 'mattn/emmet-vim'                " Emmet-style abbreviation expansion
+Plug 'mbbill/undotree'                " A nice undo-tree viewer
+Plug 'neoclide/coc-neco'              " Viml completion source for coc.nvim
+Plug 'plasticboy/vim-markdown'        " Markdown support
+Plug 'rbgrouleff/bclose.vim'          " Close buffers without closing the window
+Plug 'scrooloose/nerdcommenter'       " Format comments properly and automatically
+Plug 'scrooloose/nerdtree'            " Tree file broweser inside vim
+Plug 'sheerun/vim-polyglot'           " Language profiles (syntax highlighting)
+Plug 'tpope/vim-abolish'              " Easily search for, substitute, and abbreviate multiple variants of a word
+Plug 'tpope/vim-afterimage'           " Edit things like pdfs and word docs
+Plug 'tpope/vim-endwise'              " Automatically add 'end' for functions etc.
+Plug 'tpope/vim-eunuch'               " Vim sugar for UNIX shell commands
+Plug 'tpope/vim-fugitive'             " Git integration
+Plug 'tpope/vim-git'                  " Filetype plugin for git files
+Plug 'tpope/vim-surround'             " Surround text with arbitrary characters
+Plug 'vim-airline/vim-airline'        " Fancy statusline
+Plug 'vim-airline/vim-airline-themes' " Themes for airline
 call plug#end()
 
 
@@ -207,7 +209,7 @@ fun! CleanExtraSpaces()
 endfun
 
 if has("autocmd")
-    autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
+    autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee,*.tex :call CleanExtraSpaces()
 endif
 
 " Returns true if paste mode is enabled
@@ -232,6 +234,7 @@ endfunction
 """""""""""""""""""""""""""""""""""""""
 " Misc Maps
 """""""""""""""""""""""""""""""""""""""
+map <F2> :NERDTreeToggle <cr>
 nnoremap <silent> <F3> :Autoformat<cr>
 nnoremap <F4> :TagbarToggle<cr>
 nnoremap <F5> :UndotreeToggle<cr>:UndotreeFocus<cr>
@@ -243,7 +246,18 @@ lnoremap q/ <NOP>
 lnoremap q? <NOP>
 noremap Q <NOP>
 noremap <F1> <NOP>
+inoremap <F1> <NOP>
+noremap gh h
+noremap gH H
+noremap <PageUp> <NOP>
+noremap <PageDown> <NOP>
+inoremap <PageUp> <Left>
+inoremap <PageDown> <Right>
+
+" Save and quit with ¬¬
 noremap ¬¬ ZZ
+
+" Close a buffer with ,q
 noremap <leader>q :Bclose<cr>
 
 " Make s act like d but it doesn't cut the text to a register
@@ -475,22 +489,24 @@ let g:Tex_IgnoreLevel = 8
 
 """ Autoformat
 " Specify astyle commands for c/++ and java
-let g:formatdef_astyle_c = '"astyle --mode=c -A2 -F -xg -H -U -xe -k1 -W1 -xb -xf -xh -c -xp -p -C -S -N 2>/dev/null"'
-let g:formatdef_astyle_java = '"astyle --mode=java -A2 -F -xg -H -U -xe -k1 -W3 -xb -xf -xh -c -xp -p -C -S -N 2>/dev/null"'
+"let g:formatdef_astyle_c = '"astyle --mode=c -A2 -F -xg -H -U -xe -k1 -W1 -xb -xf -xh -c -xp -p -C -S -N 2>/dev/null"'
+"let g:formatdef_astyle_java = '"astyle --mode=java -A2 -F -xg -H -U -xe -k1 -W3 -xb -xf -xh -c -xp -p -C -S -N 2>/dev/null"'
 
+autocmd FileType tex let b:autoformat_autoindent=0
 " Specify custom formatters
-let g:formatters_c = ['astyle_c']
-let g:formatters_cpp = ['astyle_c']
+let g:formatterpath = ['/bin', '~/.bin']
+"let g:formatters_c = ['astyle_c']
+"let g:formatters_cpp = ['astyle_c']
 let g:formatters_java = ['astyle_java']
+let g:formatters_zsh = ['shfmt']
 
 " Autoformat on write
-au BufWrite *.c,*.py,*.h,*.hpp,*.cpp,*.hs :Autoformat
+au BufWrite *.c,*.py,*.h,*.hpp,*.cpp,*.hs,*.tex :Autoformat
 
 """ Ranger.vim
 let g:ranger_replace_netrw = 1
 
 """ NERDTree
-map <F2> :NERDTreeToggle <cr>
 let g:NERDTreeIndicatorMapCustom = {
             \ "Modified"  : "M",
             \ "Staged"    : "+",
@@ -504,3 +520,8 @@ let g:NERDTreeIndicatorMapCustom = {
             \ "Unknown"   : "?"
             \ }
 
+""" vim-lgh
+let g:lgh_asedir = '~/.vim/githistory'
+
+""" vim-gitgutter
+let g:gitgutter_map_keys=0

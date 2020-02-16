@@ -1,8 +1,15 @@
-# Init
+# Init and options
 autoload -U compinit promptinit
 autoload -U colors && colors
 compinit
 promptinit
+zstyle ':completion:*' menu select
+setopt completealiases
+setopt extendedglob
+setopt AUTO_PUSHD
+unsetopt nomatch
+prompt walters
+zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 
 # Keybinds
 # create a zkbd compatible hash;
@@ -54,49 +61,45 @@ bindkey '^H' backward-kill-word
 bindkey '^[[3;5~' kill-word
 
 # Aliases
-alias rm="rm -rfv"
-alias cp="cp -av --reflink=auto"
-alias mv="mv -v"
-alias du="du -sh"
-alias mkdir="mkdir -p"
-alias less="less -r"
-alias more="less -r"
-alias reboot="sudo reboot"
-alias poweroff="sudo poweroff"
+alias :q="exit"
+alias aria2c="aria2c --file-allocation=none"
+alias btrfs-df="btrfs filesystem df /"
 alias btrfs-du="btrfs fi du -s --human-readable"
 alias btrfs-list="sudo btrfs subvolume list / -t"
-alias btrfs-df="btrfs filesystem df /"
-alias sudo="sudo "
-alias rsync="rsync -Pva"
-alias mount="sudo mount"
-alias umount="sudo umount"
-alias feh-svg="feh --magick-timeout 1"
-alias neofetch="clear; neofetch"
-alias aria2c="aria2c --file-allocation=none"
-alias zshrc-reload="reload-zshrc"
-alias xclip="xclip -selection clipboard"
+alias cp="cp -av --reflink=auto"
 alias df="df -h"
+alias du="du -sh"
 alias fex="nautilus ."
-alias ffprobe="ffprobe -hide_banner"
 alias ffmpeg="ffmpeg -hide_banner"
 alias ffplay="ffplay -hide_banner"
+alias ffprobe="ffprobe -hide_banner"
+alias less="less -r"
+alias mkdir="mkdir -p"
+alias more="less -r"
+alias mount="sudo mount"
+alias mv="mv -v"
+alias neofetch="clear; neofetch"
+alias poweroff="sudo poweroff"
+alias reboot="sudo reboot"
+alias rm="rm -rfv"
+alias rsync="rsync -Pva"
+alias sl=ls
+alias sudo="sudo "
+alias umount="sudo umount"
+alias xclip="xclip -selection clipboard"
+alias zshrc-reload="reload-zshrc"
 
 alias -g sd="~/ScratchArea"
 alias -g dl="~/Downloads"
 alias -g "..."="../.."
+alias -g "...."="../../.."
+alias -g "....."="../../../.."
 
 alias disable-bluetooth='sudo systemctl disable bluetooth.service' # alias bluetooth diasble
 alias enable-bluetooth='sudo systemctl enable bluetooth.service' # alias bluetooth enable
-
 alias jflap="GTK_THEME=Default jflap"
-
-eval $(thefuck --alias)
-
-alias sl=ls
-
 # Conditional Aliases
-if type exa > /dev/null
-then
+if type exa >/dev/null; then
     alias ls="exa -lhgbHm --git "
     alias lst="exa -lhgbHmT --git"
     alias lsa="exa -lhgbHma --git"
@@ -104,14 +107,12 @@ else
     alias ls="ls -lh --color"
 fi
 
-if type nvim > /dev/null
-then
+if type nvim >/dev/null; then
     alias vi="nvim"
     alias vim="nvim"
     export EDITOR=nvim
     export VISUAL=nvim
-elif type vim > /dev/null
-then
+elif type vim >/dev/null; then
     alias vi="vim"
     alias nvim="vim"
     export EDITOR=vim
@@ -122,120 +123,44 @@ else
     export EDITOR=vi
     export VISUAL=vi
 fi
-if type nvimpager > /dev/null
-then
+if type nvimpager >/dev/null; then
     alias less="nvimpager"
     export PAGER=nvimpager
 fi
-if type bat > /dev/null
-then
+if type bat >/dev/null; then
     alias cat="PAGER=less bat --color=always"
 fi
 
-
-# ZSH Style and Options
-zstyle ':completion:*' menu select
-setopt completealiases
-setopt extendedglob
-unsetopt nomatch
-prompt spaceship
-zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
-
 # Functions
-mkcdir() {
-    mkdir -p -- "$1" &&
-        cd -P -- "$1"
-    }
-
-reload-zshrc() {
-source ~/.zshrc
-}
-
-lls() {
-    clear
-    ls
-}
-
-borderless() {
-    xprop -f _MOTIF_WM_HINTS 32c -set _MOTIF_WM_HINTS "0x2, 0x0, 0x0, 0x0, 0x0"
-}
-
-borderless-undo() {
-xprop -f _MOTIF_WM_HINTS 32c -set _MOTIF_WM_HINTS "0x2, 0x0, 0x1, 0x0, 0x0"
-}
-
-magnet-info() {
-wd=`pwd`
-cd /tmp
-hash=$(echo "$1" | grep -oP "(?<=btih:).*?(?=&)")
-echo "Magnet hash: $hash"
-aria2c --bt-metadata-only=true --bt-save-metadata=true "$1"
-aria2c "$hash.torrent" -S
-cd $wd
-}
-
-ffcompare() {
-    ffplay $1 & ffplay $2
-}
-
-vmaf() {
-    ffmpeg -hwaccel auto -i $1 -hwaccel auto -i $2 -lavfi libvmaf="model_path=/usr/share/model/vmaf_v0.6.1.pkl" -an -f null -
-}
-
-ex() {
-    if [ -f $1 ] ; then
-        case $1 in
-            *.tar.bz2)   tar xjf $1   ;;
-            *.tar.gz)    tar xzf $1   ;;
-            *.tar.xz)    tar xf $1    ;;
-            *.bz2)       bunzip2 $1   ;;
-            *.rar)       unrar x $1   ;;
-            *.gz)        gunzip $1    ;;
-            *.tar)       tar xf $1    ;;
-            *.tbz2)      tar xjf $1   ;;
-            *.tgz)       tar xzf $1   ;;
-            *.zip)       unzip $1     ;;
-            *.Z)         uncompress $1;;
-            *.7z)        7z x $1      ;;
-            *)           echo "'$1' cannot be extracted via ex()" ;;
-        esac
-    else
-        echo "'$1' is not a valid file"
-    fi
-}
-
-syncboostnote(){
-    python ~/boostread.py -p -r -q -d /"$1"
-}
-
-runkali(){
-    cd ~/VMs && ./start.sh -cdrom kali.iso
-}
+source ~/.zsh/functions.zsh
 
 # esc-esc sudo
 sudo-command-line() {
-[[ -z $BUFFER ]] && zle up-history
-if [[ $BUFFER == sudo\ * ]]; then
-    LBUFFER="${LBUFFER#sudo }"
-elif [[ $BUFFER == $EDITOR\ * ]]; then
-    LBUFFER="${LBUFFER#$EDITOR }"
-    LBUFFER="sudoedit $LBUFFER"
-elif [[ $BUFFER == vim\ * ]]; then
-    LBUFFER="${LBUFFER#vim }"
-    LBUFFER="sudoedit $LBUFFER"
-elif [[ $BUFFER == sudoedit\ * ]]; then
-    LBUFFER="${LBUFFER#sudoedit }"
-    LBUFFER="$EDITOR $LBUFFER"
-else
-    LBUFFER="sudo $LBUFFER"
-fi
+    [[ -z $BUFFER ]] && zle up-history
+    if [[ $BUFFER == sudo\ * ]]; then
+        LBUFFER="${LBUFFER#sudo }"
+    elif [[ $BUFFER == $EDITOR\ * ]]; then
+        LBUFFER="${LBUFFER#$EDITOR }"
+        LBUFFER="sudoedit $LBUFFER"
+    elif [[ $BUFFER == vim\ * ]]; then
+        LBUFFER="${LBUFFER#vim }"
+        LBUFFER="sudoedit $LBUFFER"
+    elif [[ $BUFFER == sudoedit\ * ]]; then
+        LBUFFER="${LBUFFER#sudoedit }"
+        LBUFFER="$EDITOR $LBUFFER"
+    else
+        LBUFFER="sudo $LBUFFER"
+    fi
+}
+syncboostnote(){
+    python ~/boostread.py -p -r -q -d /"$1"
+}
+runkali(){
+    cd ~/VMs && ./start.sh -cdrom kali.iso
 }
 zle -N sudo-command-line
 bindkey "\e\e" sudo-command-line
 bindkey -M vicmd '\e\e' sudo-command-line
-
-
-
 
 # PATH
 if [ -d /etc/zsh/zshrc.d ]; then
@@ -244,19 +169,19 @@ if [ -d /etc/zsh/zshrc.d ]; then
     done
 fi
 
-if [ -d "$HOME/.bin" ] ; then
+if [ -d "$HOME/.bin" ]; then
     PATH="$HOME/.bin:$PATH"
 fi
 
-if [ -d "$HOME/.local/bin" ] ; then
+if [ -d "$HOME/.local/bin" ]; then
     PATH="$HOME/.local/bin:$PATH"
 fi
 
-if [ -d "$HOME/bin" ] ; then
+if [ -d "$HOME/bin" ]; then
     PATH="$HOME/bin:$PATH"
 fi
 
-if [ -d "/ubin" ] ; then
+if [ -d "/ubin" ]; then
     PATH="/ubin:$PATH"
 fi
 
@@ -266,58 +191,68 @@ export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 export HISTFILE="~/zfile"
 export ARCHFLAGS="-arch x86_64"
 
-eval $(ssh-agent) > /dev/null
+eval $(ssh-agent) >/dev/null
 
-(\cat ~/.cache/wal/sequences 2>/dev/null &)
+# Wal
+if [ -d ~/.cache/wal/ ]; then
+    \cat ~/.cache/wal/sequences 2>/dev/null 
+fi
 
-# Sourcing Plugins
+# Plugins
+if type thefuck >/dev/null; then
+    eval $(thefuck --alias)
+fi
 
-#if [ -f ~/.zsh/vi-mode.plugin.zsh ]; then
-#    source ~/.zsh/vi-mode.plugin.zsh
-#else
-#    echo "vi-mode plugin not loaded"
-#fi
+if [ -f ~/.zsh/plugins/vi-mode.plugin.zsh ]; then
+    source ~/.zsh/plugins/vi-mode.plugin.zsh
+else
+    echo "vi-mode plugin not loaded"
+fi
 
 if grep -Fxq "arch" /etc/os-release; then
-    if [ -f ~/.zsh/git.plugin.zsh ]; then
-        source ~/.zsh/git.plugin.zsh
+    if [ -f ~/.zsh/plugins/git.plugin.zsh ]; then
+        source ~/.zsh/plugins/git.plugin.zsh
     else
         echo "archlinux plugin not loaded"
     fi
 fi
 
-if [ -f ~/.zsh/globalias.plugin.zsh ]; then
-    source ~/.zsh/globalias.plugin.zsh
+if [ -f ~/.zsh/plugins/globalias.plugin.zsh ]; then
+    source ~/.zsh/plugins/globalias.plugin.zsh
 else
     echo "globalias plugin not loaded"
 fi
 
-if [ -f ~/.zsh/git.plugin.zsh ]; then
-    source ~/.zsh/git.plugin.zsh
+if [ -f ~/.zsh/plugins/git.plugin.zsh ]; then
+    source ~/.zsh/plugins/git.plugin.zsh
 else
     echo "git plugin not loaded"
 fi
 
-if [ -f ~/.zsh/you-should-use.plugin.zsh ]; then
-    source ~/.zsh/you-should-use.plugin.zsh
+if [ -f ~/.zsh/plugins/you-should-use.plugin.zsh ]; then
+    source ~/.zsh/plugins/you-should-use.plugin.zsh
 else
     echo "you-should-use plugin not loaded"
 fi
 
 if [ -f /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
     source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-elif [ -f ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
-    source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+elif [ -f ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
+    source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 else
     echo "zsh-syntax-highlighting plugin not loaded"
 fi
 
 if [ -f /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
     source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-elif [ -f ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
-    source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+elif [ -f ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+    source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 else
     echo "zsh-autosuggestions plugin not loaded"
+fi
+
+if [ -f ~/.resh/shellrc ]; then
+    source ~/.resh/shellrc
 fi
 
 if grep -Fxq "arch" /etc/os-release; then
