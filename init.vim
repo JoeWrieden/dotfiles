@@ -235,10 +235,6 @@ endfunction
 nnoremap <silent> <F3> :Autoformat<cr>
 nnoremap <F4> :TagbarToggle<cr>
 nnoremap <F5> :UndotreeToggle<cr>:UndotreeFocus<cr>
-noremap <Up> <NOP>
-noremap <Left> <NOP>
-noremap <Down> <NOP>
-noremap <Right> <NOP>
 noremap q: <NOP>
 noremap q/ <NOP>
 noremap q? <NOP>
