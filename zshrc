@@ -265,3 +265,5 @@ setopt SHARE_HISTORY
 
 
 fpath=($fpath "/home/joe/.zfunctions")
+
+[ -f ~/.resh/shellrc ] && source ~/.resh/shellrc # this line was added by RESH (Rich Enchanced Shell History)
